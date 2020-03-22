@@ -72,7 +72,6 @@ class suffix
                 else{
                     active_length=1;
                     active_edge=cint;
-                    remainder++;
                 }
             }
             else{
@@ -95,15 +94,17 @@ class suffix
                     curnode->alpha[active_edge]->alpha[str[nxtpos]-'a']->start=nxtpos;
                     curnode->alpha[active_edge]->alpha[str[nxtpos]-'a']->end=&END;
 
-                    int temp_no=nxtpos-1;
-                    curnode->alpha[active_edge]->end=&temp_no;
+                    delete curnode->alpha[active_edge]->end;
+                    curnode->alpha[active_edge]->end=new int;
+                    *(curnode->alpha[active_edge]->end)=nxtpos-1;
+
 
                     if(lastnode!=nullptr)
                         lastnode->suffixlink=curnode->alpha[active_edge];
 
                     lastnode=curnode->alpha[active_edge];
+                    active_edge=str[curnode->alpha[active_edge]->start+1]-'a';
                     curnode=root;
-                    active_edge=str[END-remainder-1];
                     active_length--;
                     remainder--;
                 }
