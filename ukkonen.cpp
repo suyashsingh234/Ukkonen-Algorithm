@@ -54,28 +54,62 @@ class suffix
         END++;
         int cint=c-'a';
         struct node* lastnode=nullptr;
-        if(curnode->alpha[cint]==nullptr)
+        remainder++;
+        int r=remainder;
+        while(r>0)
         {
-            struct node* newnode=getnode();
-            newnode->start=cint;
-            newnode->end=&END;
-            curnode->alpha[cint]=newnode;
-        }
-        else{
-            remainder++;
-            if(active_edge==-1)
+            if(active_length==0)
             {
-                active_edge=cint;
-                active_length=1;
-            }
-            else if(str[END] == str[curnode->alpha[active_edge]->start+active_length]){
-                active_length++;
+                lastnode=nullptr;
+                curnode=root;
+                if(curnode->alpha[cint]==nullptr)
+                {
+                    curnode->alpha[cint]=getnode();
+                    curnode->alpha[cint]->start=END;
+                    curnode->alpha[cint]->end=&END;
+                    remainder--;
+                }
+                else{
+                    active_length=1;
+                    active_edge=cint;
+                    remainder++;
+                }
             }
             else{
+                if(str[curnode->alpha[active_edge]->start+active_length]==str[END])
+                {
+                    lastnode=nullptr;
+                    active_length++;
+                    remainder++;
+                    r=0;
+                }
+                else{
 
+                    curnode->alpha[active_edge]->alpha[str[END]-'a']=getnode();
+                    curnode->alpha[active_edge]->alpha[str[END]-'a']->start=END;
+                    curnode->alpha[active_edge]->alpha[str[END]-'a']->end=&END;
+
+                    int nxtpos=curnode->alpha[active_edge]->start+active_length;
+
+                    curnode->alpha[active_edge]->alpha[str[nxtpos]-'a']=getnode();
+                    curnode->alpha[active_edge]->alpha[str[nxtpos]-'a']->start=nxtpos;
+                    curnode->alpha[active_edge]->alpha[str[nxtpos]-'a']->end=&END;
+
+                    int temp_no=nxtpos-1;
+                    curnode->alpha[active_edge]->end=&temp_no;
+
+                    if(lastnode!=nullptr)
+                        lastnode->suffixlink=curnode->alpha[active_edge];
+
+                    lastnode=curnode->alpha[active_edge];
+                    curnode=root;
+                    active_edge=str[END-remainder-1];
+                    active_length--;
+                    remainder--;
+                }
             }
+            r--;
         }
-
     }
 
     struct node* make(string s)
@@ -112,7 +146,7 @@ class suffix
 int main()
 {
     suffix s;
-    s.make("abcab");
+    s.make("abcabx");
     s.levelorder();
     return 0;
 }
