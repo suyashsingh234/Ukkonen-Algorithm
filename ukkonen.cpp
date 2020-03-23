@@ -87,6 +87,7 @@ class suffix
                     r=0;
                 }
                 else{
+
                     curnode->alpha[active_edge]->alpha[str[END]-'a']=getnode();
                     curnode->alpha[active_edge]->alpha[str[END]-'a']->start=END;
                     curnode->alpha[active_edge]->alpha[str[END]-'a']->end=&END;
@@ -100,19 +101,22 @@ class suffix
                     delete curnode->alpha[active_edge]->end;
                     curnode->alpha[active_edge]->end=new int;
                     *(curnode->alpha[active_edge]->end)=nxtpos-1;
+
                     remainder--;
 
                     if(lastnode!=nullptr)
                         lastnode->suffixlink=curnode->alpha[active_edge];
 
                     lastnode=curnode->alpha[active_edge];
-                    if(curnode->suffixlink)
+                    if(curnode!=root)
                     {
-                        curnode=curnode->suffixlink;
-                        cout<<*curnode->end<<endl;
+                        if(curnode->suffixlink!=nullptr)
+                            curnode=curnode->suffixlink;
+                        else
+                            curnode=root;
                     }
                     else{
-                        active_edge=str[curnode->alpha[active_edge]->start+1]-'a';
+                        active_edge=str[END-remainder+1]-'a';
                         curnode=root;
                         active_length--;
                     }
