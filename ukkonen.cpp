@@ -75,15 +75,18 @@ class suffix
                 }
             }
             else{
-                if(str[curnode->alpha[active_edge]->start+active_length]==str[END])
+                if(curnode->alpha[active_edge]->start+active_length > *(curnode->alpha[active_edge]->end))
                 {
-                    lastnode=nullptr;
+                    curnode=curnode->alpha[active_edge];
+                    active_edge=cint;
+                    active_length=1;
+                }
+                else if(str[curnode->alpha[active_edge]->start+active_length]==str[END])
+                {
                     active_length++;
-                    remainder++;
                     r=0;
                 }
                 else{
-
                     curnode->alpha[active_edge]->alpha[str[END]-'a']=getnode();
                     curnode->alpha[active_edge]->alpha[str[END]-'a']->start=END;
                     curnode->alpha[active_edge]->alpha[str[END]-'a']->end=&END;
@@ -97,16 +100,22 @@ class suffix
                     delete curnode->alpha[active_edge]->end;
                     curnode->alpha[active_edge]->end=new int;
                     *(curnode->alpha[active_edge]->end)=nxtpos-1;
-
+                    remainder--;
 
                     if(lastnode!=nullptr)
                         lastnode->suffixlink=curnode->alpha[active_edge];
 
                     lastnode=curnode->alpha[active_edge];
-                    active_edge=str[curnode->alpha[active_edge]->start+1]-'a';
-                    curnode=root;
-                    active_length--;
-                    remainder--;
+                    if(curnode->suffixlink)
+                    {
+                        curnode=curnode->suffixlink;
+                        cout<<*curnode->end<<endl;
+                    }
+                    else{
+                        active_edge=str[curnode->alpha[active_edge]->start+1]-'a';
+                        curnode=root;
+                        active_length--;
+                    }
                 }
             }
             r--;
@@ -118,7 +127,11 @@ class suffix
         int len=s.size();
         str=s;
         for(int i=0;i<len;i++)
+        {
             insert(s[i]);
+            //levelorder();
+            //cout<<endl;
+        }
         return root;
     }
     void levelorder()
@@ -147,7 +160,7 @@ class suffix
 int main()
 {
     suffix s;
-    s.make("abcabx");
+    s.make("abcabxabcd");
     s.levelorder();
     return 0;
 }
