@@ -79,9 +79,9 @@ class suffix
                 {
                     curnode=curnode->alpha[active_edge];
                     active_edge=cint;
-                    active_length=1;
+                    active_length=0;
                 }
-                else if(str[curnode->alpha[active_edge]->start+active_length]==str[END])
+                if(str[curnode->alpha[active_edge]->start+active_length]==str[END])
                 {
                     active_length++;
                     r=0;
